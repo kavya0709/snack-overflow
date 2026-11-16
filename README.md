@@ -222,7 +222,7 @@ npm run dev
 
 The 3–5 minute walkthrough covers the application flow and the concurrency and authorization implementation:
 
-[Watch the Snack Overflow walkthrough](https://drive.google.com/file/d/1ew1W95RaZth8Kaj3e1UzH1xnze6fJMqQ/view?usp=drivesdk)
+[Watch the Snack Overflow walkthrough](https://drive.google.com/file/d/1EopzkDZczQznVYy7VwVokKxLIUlK2Yl0/view?usp=drivesdk)
 
 ---
 
