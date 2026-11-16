@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum Category {
+  SWEET
+  SAVOURY
+  DRINK
+  HEALTHY_ISH
+}
+
+enum Action {
+  RESTOCKED
+  CONSUMED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(MEMBER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  votes      Vote[]
+  activities Activity[]
+
+  @@map("users")
+}
+
+model Snack {
+  id                String   @id @default(uuid())
+  name              String   @unique
+  category          Category
+  quantity          Int      @default(0)
+  lowStockThreshold Int      @default(5)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  votes      Vote[]
+  activities Activity[]
+
+  @@map("snacks")
+}
+
+model Vote {
+  id        String   @id @default(uuid())
+  userId    String
+  snackId   String
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  snack Snack @relation(fields: [snackId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, snackId])
+  @@index([snackId])
+  @@index([userId])
+  @@map("votes")
+}
+
+model Activity {
+  id        String   @id @default(uuid())
+  userId    String?
+  snackId   String?
+  action    Action
+  amount    Int
+  createdAt DateTime @default(now())
+
+  // Nullable relations: preserve history when user/snack is deleted
+  user  User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+  snack Snack? @relation(fields: [snackId], references: [id], onDelete: SetNull)
+
+  @@index([snackId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("activities")
+}
